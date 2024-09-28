@@ -5,7 +5,7 @@ const initialGameBoard = [
   [null, null, null],
 ];
 
-export default function GameBoard() {
+export default function GameBoard({ onSelectSquare }) {
   const [gameBoard, setGameBoard] = useState(initialGameBoard);
 
   function handleSelectSquare(rowIndex, colIndex) {
@@ -13,11 +13,13 @@ export default function GameBoard() {
       const updatedBoard = [
         ...prevGameBoard.map((innerArray) => [...innerArray]),
       ];
+      console.log(prevGameBoard);
       console.log(updatedBoard);
       // you should not mutate the values (change them directly)
       updatedBoard[rowIndex][colIndex] = "X";
       return updatedBoard;
     });
+    onSelectSquare();
   }
   return (
     <ol id="game-board">
