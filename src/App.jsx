@@ -22,7 +22,7 @@ function App() {
     // Update the game turns with the new move
     setGameTurns((prevGameTurn) => {
       // Determine which player is currently playing
-      let currentPlayer = "X";
+      let currentPlayer = "O";
 
       // Check if the first turn was taken by "X" to decide the next player
       if (prevGameTurn.length > 0 && prevGameTurn[0].player === "X") {
