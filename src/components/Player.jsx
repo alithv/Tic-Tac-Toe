@@ -2,7 +2,10 @@ import { useState } from "react";
 export default function Player({ name, symbol }) {
   const [isEditing, setIsEditing] = useState(false);
   function handleEdit() {
-    setIsEditing(isEditing);
+    // You should never do this !isEditing which is new state value you should just pass a function to update the state
+    setIsEditing((editing) => {
+      return !editing;
+    });
   }
 
   let playerName = <span className="player-name">{name}</span>;
