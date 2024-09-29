@@ -5,30 +5,36 @@ import Player from "./components/Player";
 import GameBoard from "./components/GameBoard";
 import Log from "./components/Log";
 
+function deriveActivePlayer(gameTurns) {
+  let currentPlayer = "X";
+  if (gameTurns.length > 0 && gameTurns[0].player === "X") {
+    currentPlayer = "O";
+  }
+  return currentPlayer;
+}
+
 function App() {
   // State to keep track of the turns played in the game
   const [gameTurns, setGameTurns] = useState([]);
 
+  const activePlayer = deriveActivePlayer(gameTurns);
+
   // State to track the current active player ("X" or "O")
-  const [activePlayer, setActivePlayer] = useState("X");
+  // const [activePlayer, setActivePlayer] = useState("X");
 
   // Function that handles when a player selects a square on the game board
   function handleSelectSquare(row, col) {
     // Add the new move to the gameTurns state
     setGameTurns((prevGameTurn) => {
+      const currentPlayer = deriveActivePlayer(prevGameTurn);
       // Create a new updated turn with the selected square and active player
       const updatedTurns = [
-        { square: { row: row, col: col }, player: activePlayer },
+        { square: { row: row, col: col }, player: currentPlayer },
         ...prevGameTurn,
       ];
 
       return updatedTurns;
     });
-
-    // Toggle between the players, switching from "X" to "O" or vice versa
-    setActivePlayer((currentActivePlayer) =>
-      currentActivePlayer === "X" ? "O" : "X"
-    );
   }
 
   // Rendering the main game layout
@@ -58,7 +64,7 @@ function App() {
       </div>
 
       {/* Render the log to display game moves (not yet implemented in this code) */}
-      <Log />
+      <Log userTurn={gameTurns} />
     </main>
   );
 }
