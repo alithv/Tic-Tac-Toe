@@ -27,7 +27,8 @@ function App() {
 
   const activePlayer = deriveActivePlayer(gameTurns);
 
-  let gameBoard = initialGameBoard;
+  // making a deep copy of an array
+  let gameBoard = [...initialGameBoard].map((array) => [...array]);
 
   for (const turn of gameTurns) {
     // we add sqare and player from the updatedTurns in the App.js
@@ -76,6 +77,10 @@ function App() {
     });
   }
 
+  function handleRematch() {
+    setGameTurns([]);
+  }
+
   // Rendering the main game layout
   return (
     <main>
@@ -93,7 +98,9 @@ function App() {
             isActive={activePlayer === "O"}
           />
         </ol>
-        {(winner || hasDraw) && <GameOver winner={winner} />}
+        {(winner || hasDraw) && (
+          <GameOver winner={winner} onRematch={handleRematch} />
+        )}
 
         {/* Render the game board, passing down the function to handle selecting squares */}
         <GameBoard
