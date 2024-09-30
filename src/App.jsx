@@ -7,7 +7,12 @@ import Log from "./components/Log";
 import { WINNING_COMBINATIONS } from "./components/winning-combinations";
 import GameOver from "./components/GameOver";
 
-const initialGameBoard = [
+const PLAYERS = {
+  X: "Player 1",
+  O: "Player 2",
+};
+
+const INITIAL_GAME_BOARD = [
   [null, null, null],
   [null, null, null],
   [null, null, null],
@@ -21,7 +26,7 @@ function deriveActivePlayer(gameTurns) {
   return currentPlayer;
 }
 
-function deriveWinner() {
+function deriveWinner(gameBoard, players) {
   let winner = null;
 
   for (const combination of WINNING_COMBINATIONS) {
@@ -40,17 +45,12 @@ function deriveWinner() {
       winner = players[firstSquareSymbol];
     }
   }
+  return winner;
 }
 
-function App() {
-  const [players, setPlayers] = useState({ X: "Player 1", O: "Player 2" });
-  // State to keep track of the turns played in the game
-  const [gameTurns, setGameTurns] = useState([]);
-
-  const activePlayer = deriveActivePlayer(gameTurns);
-
+function deriveGameboard(gameTurns) {
   // making a deep copy of an array
-  let gameBoard = [...initialGameBoard].map((array) => [...array]);
+  let gameBoard = [...INITIAL_GAME_BOARD].map((array) => [...array]);
 
   for (const turn of gameTurns) {
     // we add sqare and player from the updatedTurns in the App.js
@@ -59,11 +59,17 @@ function App() {
 
     gameBoard[row][col] = player;
   }
+  return gameBoard;
+}
 
+function App() {
+  const [players, setPlayers] = useState(PLAYERS);
+  // State to keep track of the turns played in the game
+  const [gameTurns, setGameTurns] = useState([]);
+  const activePlayer = deriveActivePlayer(gameTurns);
+  const gameBoard = deriveGameboard(gameTurns);
+  const winner = deriveWinner(gameBoard, players);
   const hasDraw = gameTurns.length === 9 && !winner;
-
-  // State to track the current active player ("X" or "O")
-  // const [activePlayer, setActivePlayer] = useState("X");
 
   // Function that handles when a player selects a square on the game board
   function handleSelectSquare(row, col) {
@@ -97,13 +103,13 @@ function App() {
         {/* Display the players and highlight the active player */}
         <ol id="players" className="highlight-player">
           <Player
-            initialName="Player 1"
+            initialName={PLAYERS.X}
             symbol="X"
             isActive={activePlayer === "X"}
             onChangeName={handlePlayerNameChange}
           />
           <Player
-            initialName="Player 2"
+            initialName={PLAYERS.O}
             symbol="O"
             isActive={activePlayer === "O"}
             onChangeName={handlePlayerNameChange}
