@@ -21,23 +21,7 @@ function deriveActivePlayer(gameTurns) {
   return currentPlayer;
 }
 
-function App() {
-  // State to keep track of the turns played in the game
-  const [gameTurns, setGameTurns] = useState([]);
-
-  const activePlayer = deriveActivePlayer(gameTurns);
-
-  // making a deep copy of an array
-  let gameBoard = [...initialGameBoard].map((array) => [...array]);
-
-  for (const turn of gameTurns) {
-    // we add sqare and player from the updatedTurns in the App.js
-    const { square, player } = turn;
-    const { row, col } = square;
-
-    gameBoard[row][col] = player;
-  }
-
+function deriveWinner() {
   let winner = null;
 
   for (const combination of WINNING_COMBINATIONS) {
@@ -53,8 +37,27 @@ function App() {
       firstSquareSymbol === secondSquareSymbol &&
       firstSquareSymbol === thirdSquareSymbol
     ) {
-      winner = firstSquareSymbol;
+      winner = players[firstSquareSymbol];
     }
+  }
+}
+
+function App() {
+  const [players, setPlayers] = useState({ X: "Player 1", O: "Player 2" });
+  // State to keep track of the turns played in the game
+  const [gameTurns, setGameTurns] = useState([]);
+
+  const activePlayer = deriveActivePlayer(gameTurns);
+
+  // making a deep copy of an array
+  let gameBoard = [...initialGameBoard].map((array) => [...array]);
+
+  for (const turn of gameTurns) {
+    // we add sqare and player from the updatedTurns in the App.js
+    const { square, player } = turn;
+    const { row, col } = square;
+
+    gameBoard[row][col] = player;
   }
 
   const hasDraw = gameTurns.length === 9 && !winner;
@@ -81,6 +84,12 @@ function App() {
     setGameTurns([]);
   }
 
+  function handlePlayerNameChange(symbol, newName) {
+    setPlayers((prevPlayers) => {
+      return { ...prevPlayers, [symbol]: newName };
+    });
+  }
+
   // Rendering the main game layout
   return (
     <main>
@@ -91,11 +100,13 @@ function App() {
             initialName="Player 1"
             symbol="X"
             isActive={activePlayer === "X"}
+            onChangeName={handlePlayerNameChange}
           />
           <Player
             initialName="Player 2"
             symbol="O"
             isActive={activePlayer === "O"}
+            onChangeName={handlePlayerNameChange}
           />
         </ol>
         {(winner || hasDraw) && (
